@@ -1,0 +1,7 @@
+---
+duply_deactivate: false
+duply_verbosity: notice
+duply_max_fullbkp_age: 3M
+duply_max_age: 2Y
+duply_max_fulls_with_incrs: 2
+duplicity_extra_parms: ""

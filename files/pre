@@ -1,0 +1,1 @@
+run-parts --report /etc/duply/main/pre-scripts

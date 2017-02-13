@@ -1,0 +1,17 @@
+GPG_KEY=disabled
+
+SOURCE=/
+TARGET={{ duply_target }}
+
+MAX_AGE={{ duply_max_age }}
+MAX_FULLS_WITH_INCRS={{ duply_max_fulls_with_incrs }}
+MAX_FULLBKP_AGE={{ duply_max_fullbkp_age }}
+DUPL_PARAMS="$DUPL_PARAMS --full-if-older-than $MAX_FULLBKP_AGE "
+
+VOLSIZE=1024
+DUPL_PARAMS="$DUPL_PARAMS --volsize $VOLSIZE "
+
+DUPL_PARAMS="$DUPL_PARAMS {{ duplicity_extra_parms }} "
+
+VERBOSITY={{ duply_verbosity }}
+ARCH_DIR=/var/cache/duplicity/duply_main/

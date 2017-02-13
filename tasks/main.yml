@@ -1,0 +1,55 @@
+- name: Install duply
+  apt: name=duply
+  when: not duply_deactivate
+
+# We install paramiko from pip, because the Jessie version has some
+# problems; notably later parmiko versions have improved on
+# https://github.com/paramiko/paramiko/issues/17; in addition, older
+# paramiko versions say "no acceptable kex algorithm" when they try to
+# connect to Jessie servers.
+- name: Ensure paramiko deb is uninstalled
+  apt: name=python-paramiko state=absent
+- name: Install paramiko from pip
+  pip: name=paramiko version=1.16.0
+  when: not duply_deactivate
+
+# Avoid the "no module gio" warning
+- name: Install python-gobject
+  apt: name=python-gobject
+  when: not duply_deactivate
+
+- name: Create duply configuration directory
+  file: dest=/etc/duply/main state=directory mode=0700
+  when: not duply_deactivate
+
+- name: Create duply exclude file
+  copy: src=exclude dest=/etc/duply/main/exclude
+  when: not duply_deactivate
+
+- name: Create duply configuration file
+  template: src=conf dest=/etc/duply/main/conf
+  when: not duply_deactivate
+
+- name: Create duply pre file
+  copy: src=pre dest=/etc/duply/main/pre mode=0755
+  when: not duply_deactivate
+
+- name: Create duply pre-scripts directory
+  file: dest=/etc/duply/main/pre-scripts state=directory
+  when: not duply_deactivate
+
+- name: Create duply post file
+  copy: src=post dest=/etc/duply/main/post mode=0755
+  when: not duply_deactivate
+
+- name: Create duply post-scripts directory
+  file: dest=/etc/duply/main/post-scripts state=directory
+  when: not duply_deactivate
+
+- name: Install duply cron job
+  copy: src=duply.cron dest=/etc/cron.daily/duply mode=0755
+  when: not duply_deactivate
+
+- name: Remove duply cron job
+  file: dest=/etc/cron.daily/duply state=absent 
+  when: duply_deactivate

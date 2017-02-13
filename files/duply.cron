@@ -1,0 +1,4 @@
+#!/bin/bash
+duply main purge --force >/tmp/duply.out
+duply main purgeIncr --force --verbosity=error >>/tmp/duply.out
+duply main backup >>/tmp/duply.out
