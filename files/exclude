@@ -17,7 +17,7 @@
 - /usr
 - /var/cache
 - /var/crash
-- /var/lib/postgres
+- /var/lib/postgresql
 - /var/lib/mysql
 - /var/lock
 - /var/run
