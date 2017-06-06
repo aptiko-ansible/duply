@@ -2,6 +2,16 @@
   apt: name=duply
   when: not duply_deactivate
 
+# We install python-crypto and python-ecdsa directly and not as dependencies,
+# because we do smart things with paramiko installation below and they
+# might be accidentally autoremoved.
+
+- name: Install python-crypto
+  apt: name=python-crypto
+
+- name: Install python-ecdsa
+  apt: name=python-ecdsa
+
 # We install paramiko from pip, because the Jessie version has some
 # problems; notably later parmiko versions have improved on
 # https://github.com/paramiko/paramiko/issues/17; in addition, older
