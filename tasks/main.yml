@@ -18,10 +18,17 @@
 # paramiko versions say "no acceptable kex algorithm" when they try to
 # connect to Jessie servers; finally,
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=851551
+- name: Install setuptools
+  apt: name=python-setuptools
 - name: Ensure paramiko deb is uninstalled
   apt: name=python-paramiko state=absent
 - name: Install paramiko from pip
   pip: name=paramiko version=1.17.4
+  when: not duply_deactivate
+
+# Install Backblaze backend in case it's needed
+- name: Install Backblaze B2 backend
+  pip: name=b2
   when: not duply_deactivate
 
 # Avoid the "no module gio" warning
