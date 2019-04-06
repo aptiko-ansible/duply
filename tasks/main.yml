@@ -2,6 +2,26 @@
   apt: name=duply
   when: not duply_deactivate
 
+# We install a more recent version of duplicity than the prepackaged, otherwise
+# we have problems with the OS.
+
+- name: Install librsync-dev (needed to compile duplicity)
+  apt: name=librsync-dev
+  when: not duply_deactivate
+
+- name: Install gcc (needed to compile duplicity)
+  apt: name=gcc
+  when: not duply_deactivate
+
+- name: Install libc6-dev (needed to compile duplicity)
+  apt: name=libc6-dev
+  when: not duply_deactivate
+
+- name: Install duplicity
+  pip:
+    name: https://code.launchpad.net/duplicity/0.7-series/0.7.18.2/+download/duplicity-0.7.18.2.tar.gz
+  when: not duply_deactivate
+
 # We install python-crypto and python-ecdsa directly and not as dependencies,
 # because we do smart things with paramiko installation below and they
 # might be accidentally autoremoved.
