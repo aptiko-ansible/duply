@@ -17,6 +17,14 @@
   apt: name=libc6-dev
   when: not duply_deactivate
 
+- name: Install python-setuptools (needed to compile duplicity)
+  apt: name=python-setuptools
+  when: not duply_deactivate
+
+- name: Install python-dev (needed to compile duplicity)
+  apt: name=python-dev
+  when: not duply_deactivate
+
 - name: Install duplicity
   pip:
     name: https://code.launchpad.net/duplicity/0.7-series/0.7.18.2/+download/duplicity-0.7.18.2.tar.gz
@@ -38,8 +46,6 @@
 # paramiko versions say "no acceptable kex algorithm" when they try to
 # connect to Jessie servers; finally,
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=851551
-- name: Install setuptools
-  apt: name=python-setuptools
 - name: Ensure paramiko deb is uninstalled
   apt: name=python-paramiko state=absent
 - name: Install paramiko from pip
