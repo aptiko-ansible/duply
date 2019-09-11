@@ -25,6 +25,10 @@
   apt: name=python-dev
   when: not duply_deactivate
 
+- name: Install python-pip (needed for duplicity)
+  apt: name=python-pip
+  when: not duply_deactivate
+
 - name: Install duplicity
   pip:
     name: https://code.launchpad.net/duplicity/0.7-series/0.7.18.2/+download/duplicity-0.7.18.2.tar.gz
@@ -53,6 +57,9 @@
   when: not duply_deactivate
 
 # Install Backblaze backend in case it's needed
+- name: Install setuptools>=20.2 (required by b2)
+  pip: name=setuptools>=20.2
+
 - name: Install Backblaze B2 backend
   pip: name=b2
   when: not duply_deactivate
@@ -96,4 +103,4 @@
 
 - name: Remove duply cron job
   file: dest=/etc/cron.daily/duply state=absent 
-  when: duply_deactivate
+  when: duply_deactivate|bool
