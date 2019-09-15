@@ -40,9 +40,11 @@
 
 - name: Install python-crypto
   apt: name=python-crypto
+  when: not duply_deactivate
 
 - name: Install python-ecdsa
   apt: name=python-ecdsa
+  when: not duply_deactivate
 
 # We install paramiko from pip, because the Jessie version has some
 # problems; notably later paramiko versions have improved on
@@ -59,6 +61,7 @@
 # Install Backblaze backend in case it's needed
 - name: Install setuptools>=20.2 (required by b2)
   pip: name=setuptools>=20.2
+  when: not duply_deactivate
 
 - name: Install Backblaze B2 backend
   pip: name=b2
