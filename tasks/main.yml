@@ -31,6 +31,7 @@
 
 - name: Install duplicity
   pip:
+    executable: /usr/bin/pip
     name: https://code.launchpad.net/duplicity/0.7-series/0.7.18.2/+download/duplicity-0.7.18.2.tar.gz
   when: not duply_deactivate
 
@@ -55,16 +56,16 @@
 - name: Ensure paramiko deb is uninstalled
   apt: name=python-paramiko state=absent
 - name: Install paramiko from pip
-  pip: name=paramiko version=1.17.4
+  pip: name=paramiko version=1.17.4 executable=/usr/bin/pip
   when: not duply_deactivate
 
 # Install Backblaze backend in case it's needed
 - name: Install setuptools>=20.2 (required by b2)
-  pip: name=setuptools>=20.2
+  pip: name=setuptools>=20.2 executable=/usr/bin/pip
   when: not duply_deactivate
 
 - name: Install Backblaze B2 backend
-  pip: name=b2
+  pip: name=b2 executable=/usr/bin/pip
   when: not duply_deactivate
 
 # Avoid the "no module gio" warning
