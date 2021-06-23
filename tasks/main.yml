@@ -1,9 +1,8 @@
-- name: Install duply
-  apt: name=duply
-  when: not duply_deactivate
+# The OS's prepackaged duply and duplicity are a pain. We install our
+# own versions.
 
-# We install a more recent version of duplicity than the prepackaged, otherwise
-# we have problems with the OS.
+- name: Uninstall prepackaged duply
+  apt: name=duply state=absent autoremove=True
 
 - name: Install librsync-dev (needed to compile duplicity)
   apt: name=librsync-dev
@@ -17,35 +16,67 @@
   apt: name=libc6-dev
   when: not duply_deactivate
 
-- name: Install python-setuptools (needed to compile duplicity)
-  apt: name=python-setuptools
+- name: Install python3-dev (needed to compile duplicity)
+  apt: name=python3-dev
   when: not duply_deactivate
 
-- name: Install python-dev (needed to compile duplicity)
-  apt: name=python-dev
+- name: Install virtualenv (needed for duplicity)
+  apt: name=virtualenv
   when: not duply_deactivate
 
-- name: Install python-pip (needed for duplicity)
-  apt: name=python-pip
+- name: Install gettext (needed for duplicity)
+  apt: name=gettext
+  when: not duply_deactivate
+
+- name: Install setuptools_scm (required for duplicity)
+  pip:
+    name: setuptools_scm
+    virtualenv: /opt/duply/venv
+    virtualenv_site_packages: no
+    virtualenv_python: python3
+  when: not duply_deactivate
+
+- name: Install setuptools>=20.2 (required by b2)
+  pip:
+    name: setuptools>=20.2
+    virtualenv: /opt/duply/venv
+    virtualenv_site_packages: no
+    virtualenv_python: python3
   when: not duply_deactivate
 
 - name: Install duplicity
   pip:
-    executable: /usr/bin/pip
-    name: https://code.launchpad.net/duplicity/0.7-series/0.7.18.2/+download/duplicity-0.7.18.2.tar.gz
+    name: duplicity
+    virtualenv: /opt/duply/venv
+    virtualenv_site_packages: no
+    virtualenv_python: python3
+    version: 0.8.19
   when: not duply_deactivate
+
+- name: Install duply
+  copy: src=duply-2.3.1 dest=/opt/duply/duply mode=0755
+  when: not duply_deactivate
+
+- name: Install duply wrapper
+  copy:
+    dest: /usr/local/bin/duply
+    mode: 0755
+    content: |
+      #!/bin/sh
+      PATH=/opt/duply/venv/bin:$PATH
+      exec /opt/duply/duply "$@"
 
 # We install python-crypto and python-ecdsa directly and not as dependencies,
 # because we do smart things with paramiko installation below and they
 # might be accidentally autoremoved.
 
-- name: Install python-crypto
-  apt: name=python-crypto
-  when: not duply_deactivate
+# - name: Install python-crypto
+#   apt: name=python-crypto
+#   when: not duply_deactivate
 
-- name: Install python-ecdsa
-  apt: name=python-ecdsa
-  when: not duply_deactivate
+# - name: Install python-ecdsa
+#   apt: name=python-ecdsa
+#   when: not duply_deactivate
 
 # We install paramiko from pip, because the Jessie version has some
 # problems; notably later paramiko versions have improved on
@@ -56,22 +87,28 @@
 - name: Ensure paramiko deb is uninstalled
   apt: name=python-paramiko state=absent
 - name: Install paramiko from pip
-  pip: name=paramiko version=1.17.4 executable=/usr/bin/pip
+  pip:
+    name: paramiko
+    version: 1.17.4
+    virtualenv: /opt/duply/venv
+    virtualenv_site_packages: no
+    virtualenv_python: python3
   when: not duply_deactivate
 
 # Install Backblaze backend in case it's needed
-- name: Install setuptools>=20.2 (required by b2)
-  pip: name=setuptools>=20.2 executable=/usr/bin/pip
-  when: not duply_deactivate
-
 - name: Install Backblaze B2 backend
-  pip: name=b2 executable=/usr/bin/pip
+  pip:
+    name: b2
+    virtualenv: /opt/duply/venv
+    virtualenv_site_packages: no
+    virtualenv_python: python3
+    version: 1.4.2
   when: not duply_deactivate
 
 # Avoid the "no module gio" warning
-- name: Install python-gobject
-  apt: name=python-gobject
-  when: not duply_deactivate
+# - name: Install python-gobject
+#   apt: name=python-gobject
+#   when: not duply_deactivate
 
 - name: Create duply configuration directory
   file: dest=/etc/duply/main state=directory mode=0700
