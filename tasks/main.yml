@@ -4,28 +4,15 @@
 - name: Uninstall prepackaged duply
   apt: name=duply state=absent autoremove=True
 
-- name: Install librsync-dev (needed to compile duplicity)
-  apt: name=librsync-dev
-  when: not duply_deactivate
-
-- name: Install gcc (needed to compile duplicity)
-  apt: name=gcc
-  when: not duply_deactivate
-
-- name: Install libc6-dev (needed to compile duplicity)
-  apt: name=libc6-dev
-  when: not duply_deactivate
-
-- name: Install python3-dev (needed to compile duplicity)
-  apt: name=python3-dev
-  when: not duply_deactivate
-
-- name: Install virtualenv (needed for duplicity)
-  apt: name=virtualenv
-  when: not duply_deactivate
-
-- name: Install gettext (needed for duplicity)
-  apt: name=gettext
+- name: Install apt packages needed for duplicity
+  apt:
+    name:
+      - librsync-dev
+      - gcc
+      - libc6-dev
+      - python3-dev
+      - virtualenv
+      - gettext
   when: not duply_deactivate
 
 - name: Install setuptools_scm (required for duplicity)
