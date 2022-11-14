@@ -13,6 +13,7 @@
       - python3-dev
       - virtualenv
       - gettext
+      - gnupg
   when: not duply_deactivate
 
 - name: Install setuptools_scm (required for duplicity)
